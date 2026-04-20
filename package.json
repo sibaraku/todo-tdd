@@ -10,7 +10,9 @@
   "license": "ISC",
   "description": "",
   "dependencies": {
-    "express": "^5.2.1"
+    "express": "^5.2.1",
+    "mongoose": "^9.4.1",
+    "node-mocks-http": "^1.17.2"
   },
   "devDependencies": {
     "jest": "^30.3.0"
