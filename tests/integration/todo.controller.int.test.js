@@ -1,10 +1,12 @@
 const request = require('supertest');
+const mongoose = require('mongoose');
 const app = require('../../app');
 const newTodo = require('../../mock-data/new-todo.json');
 
 const endpointUrl = '/todos/';
 
-let firstTodo;
+let firstTodo, newTodoId;
+const testData = { title: "updated title", done: true };
 
 describe(endpointUrl, () => {
     it("POST " + endpointUrl, async () => {
@@ -14,6 +16,7 @@ describe(endpointUrl, () => {
         expect(response.statusCode).toBe(201);
         expect(response.body.title).toBe(newTodo.title);
         expect(response.body.done).toBe(newTodo.done);
+        newTodoId = response.body._id;
     });
     it("should return error 500 on malformed data with POST", async () => {
         const response = await request(app)
@@ -49,6 +52,22 @@ describe(endpointUrl, () => {
     it("GET todo by id that does not exist " + endpointUrl + ":todoId", async () => {
         const response = await request(app)
             .get(endpointUrl + "69e60266b08d7dc78b5b9d1");
+        expect(response.statusCode).toBe(404);
+    });
+    it("PUT " + endpointUrl, async () => {
+        const testData = { title: "updated title", done: true };
+        const res = await request(app)
+            .put(endpointUrl + newTodoId)
+            .send(testData);
+        expect(res.statusCode).toBe(200);
+        expect(res.body.title).toBe(testData.title);
+        expect(res.body.done).toBe(testData.done);
+    });
+    it("should return 404 on PUT for todo that does not exist " + endpointUrl, async () => {
+        const nonExistingTodoId = new mongoose.Types.ObjectId().toHexString();
+        const response = await request(app)
+            .put(endpointUrl + nonExistingTodoId)
+            .send(testData);
         expect(response.statusCode).toBe(404);
     });
 });
