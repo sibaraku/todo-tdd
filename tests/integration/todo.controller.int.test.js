@@ -70,4 +70,17 @@ describe(endpointUrl, () => {
             .send(testData);
         expect(response.statusCode).toBe(404);
     });
+    it("DELETE " + endpointUrl, async () => {
+        const response = await request(app)
+            .delete(endpointUrl + newTodoId);
+        expect(response.statusCode).toBe(200);
+        expect(response.body.title).toBe(testData.title);
+        expect(response.body.done).toBe(testData.done);
+    });
+    it("should return 404 on DELETE for todo that does not exist " + endpointUrl, async () => {
+        const nonExistingTodoId = new mongoose.Types.ObjectId().toHexString();
+        const response = await request(app)
+            .delete(endpointUrl + nonExistingTodoId);
+        expect(response.statusCode).toBe(404);
+    });
 });
