@@ -2,6 +2,11 @@ const express = require('express');
 const todoRoutes = require('./routes/todo.routes');
 const app = express();
 const mongodb = require('./mongodb/mongodb.connect');
+const swaggerUi = require('swagger-ui-express');
+const YAML = require('yamljs');
+const swaggerDocument = YAML.load('./swagger.yaml');
+
+app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 
 mongodb.connect();
 

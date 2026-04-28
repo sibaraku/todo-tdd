@@ -1,0 +1,133 @@
+openapi: 3.0.0
+info:
+  title: Todo API
+  version: 1.0.0
+  description: A simple Todo API built with Express and MongoDB
+servers:
+  - url: http://localhost:3015
+    description: Local development server
+paths:
+  /todos:
+    post:
+      tags:
+        - Todos
+      summary: Create a new todo
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TodoInput'
+      responses:
+        '201':
+          description: Todo created successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Todo'
+        '500':
+          description: Internal server error
+    get:
+      tags:
+        - Todos
+      summary: Get all todos
+      responses:
+        '200':
+          description: List of todos
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Todo'
+        '500':
+          description: Internal server error
+  /todos/{id}:
+    parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+        description: The todo ID
+    get:
+      tags:
+        - Todos
+      summary: Get a todo by ID
+      responses:
+        '200':
+          description: Todo found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Todo'
+        '404':
+          description: Todo not found
+        '500':
+          description: Internal server error
+    put:
+      tags:
+        - Todos
+      summary: Update a todo by ID
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TodoInput'
+      responses:
+        '200':
+          description: Todo updated successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Todo'
+        '404':
+          description: Todo not found
+        '500':
+          description: Internal server error
+    delete:
+      tags:
+        - Todos
+      summary: Delete a todo by ID
+      responses:
+        '200':
+          description: Todo deleted successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Todo'
+        '404':
+          description: Todo not found
+        '500':
+          description: Internal server error
+components:
+  schemas:
+    Todo:
+      type: object
+      properties:
+        _id:
+          type: string
+          description: The todo ID
+        title:
+          type: string
+          description: The todo title
+        done:
+          type: boolean
+          description: Whether the todo is completed
+      required:
+        - _id
+        - title
+        - done
+    TodoInput:
+      type: object
+      properties:
+        title:
+          type: string
+          description: The todo title
+        done:
+          type: boolean
+          description: Whether the todo is completed
+      required:
+        - title
+        - done
